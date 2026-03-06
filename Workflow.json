@@ -1,0 +1,283 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        -240
+      ],
+      "id": "23137d6e-3cbf-4dd8-9221-08ccf7438340",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.chnwt.dev/thai-gold-api/latest",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        -240
+      ],
+      "id": "9e7a7979-80a9-4684-9dad-1785afcc40b2",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=ช่วยวิเคราะห์ราคาทองคำจากข้อมูลล่าสุดนี้ทีครับ:\n- ราคาขายปัจจุบัน: {{ $('HTTP Request').item.json.response.price.gold_bar.sell }} บาท\n- ราคารับซื้อ: {{ $('HTTP Request').item.json.response.price.gold_bar.buy }} บาท\n- เวลาอัปเดต: {{ $('HTTP Request').item.json.response.update_time }}\n\nตอบในรูปแบบ: [คำแนะนำ] + เหตุผล 1 ประโยคสั้นๆ ไม่เกิน 20 คำ\nห้ามใช้ markdown, ห้ามใช้ ** หรือ \\n\nตัวอย่าง: รอดูเชิง เพราะราคาทรงตัวสูง ยังไม่มีสัญญาณชัดเจน"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        -240
+      ],
+      "id": "33ce3ce9-8a1a-4ff3-9984-62b3504bf797",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "G8A2bhcHbt5rCRko",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {line_channel_access_token}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"UserID\",\n  \"messages\": [\n    {\n      \"type\": \"flex\",\n      \"altText\": \"🥇 ราคาทองคำวันนี้\",\n      \"contents\": {\n        \"type\": \"bubble\",\n        \"header\": {\n          \"type\": \"box\",\n          \"layout\": \"vertical\",\n          \"backgroundColor\": \"#C89A00\",\n          \"contents\": [\n            {\n              \"type\": \"text\",\n              \"text\": \"🥇 ราคาทองคำวันนี้\",\n              \"color\": \"#FFFFFF\",\n              \"size\": \"sm\",\n              \"weight\": \"bold\"\n            },\n            {\n              \"type\": \"text\",\n              \"text\": \"{{ $('HTTP Request').item.json.response.price.gold.sell }} บาท\",\n              \"color\": \"#FFFFFF\",\n              \"size\": \"xxl\",\n              \"weight\": \"bold\"\n            },\n            {\n              \"type\": \"text\",\n              \"text\": \"{{ $('HTTP Request').item.json.response.update_time }}\",\n              \"color\": \"#FFE58A\",\n              \"size\": \"xs\"\n            }\n          ]\n        },\n        \"body\": {\n          \"type\": \"box\",\n          \"layout\": \"vertical\",\n          \"contents\": [\n            {\n              \"type\": \"box\",\n              \"layout\": \"horizontal\",\n              \"contents\": [\n                {\n                  \"type\": \"box\",\n                  \"layout\": \"vertical\",\n                  \"flex\": 1,\n                  \"contents\": [\n                    { \"type\": \"text\", \"text\": \"ทองรูปพรรณ\", \"size\": \"xs\", \"color\": \"#888888\", \"weight\": \"bold\" },\n                    { \"type\": \"text\", \"text\": \"{{ 'ซื้อ: ' + $('HTTP Request').item.json.response.price.gold.buy }}\", \"size\": \"sm\", \"color\": \"#16A34A\" },\n                    { \"type\": \"text\", \"text\": \"{{ 'ขาย: ' + $('HTTP Request').item.json.response.price.gold.sell }}\", \"size\": \"sm\", \"color\": \"#DC2626\" }\n                  ]\n                },\n                {\n                  \"type\": \"box\",\n                  \"layout\": \"vertical\",\n                  \"flex\": 1,\n                  \"contents\": [\n                    { \"type\": \"text\", \"text\": \"ทองคำแท่ง\", \"size\": \"xs\", \"color\": \"#888888\", \"weight\": \"bold\" },\n                    { \"type\": \"text\", \"text\": \"{{ 'ซื้อ: ' + $('HTTP Request').item.json.response.price.gold_bar.buy }}\", \"size\": \"sm\", \"color\": \"#16A34A\" },\n                    { \"type\": \"text\", \"text\": \"{{ 'ขาย: ' + $('HTTP Request').item.json.response.price.gold_bar.sell }}\", \"size\": \"sm\", \"color\": \"#DC2626\" }\n                  ]\n                }\n              ]\n            },\n            { \"type\": \"separator\", \"margin\": \"md\" },\n            {\n              \"type\": \"box\",\n              \"layout\": \"vertical\",\n              \"margin\": \"md\",\n              \"contents\": [\n                { \"type\": \"text\", \"text\": \"✨ AI วิเคราะห์\", \"size\": \"sm\", \"weight\": \"bold\", \"color\": \"#5B21B6\" },\n                {\n                  \"type\": \"text\",\n                  \"text\": \"{{ $('Message a model').item.json.content.parts[0].text }}\",\n                  \"wrap\": true,\n                  \"size\": \"sm\",\n                  \"color\": \"#444444\",\n                  \"margin\": \"sm\"\n                }\n              ]\n            }\n          ]\n        },\n        \"footer\": {\n          \"type\": \"box\",\n          \"layout\": \"horizontal\",\n          \"contents\": [\n            { \"type\": \"text\", \"text\": \"ข้อมูล: YLG Gold\", \"size\": \"xs\", \"color\": \"#AAAAAA\" },\n            { \"type\": \"text\", \"text\": \"#ราคาทอง\", \"size\": \"xs\", \"color\": \"#C89A00\", \"align\": \"end\" }\n          ]\n        }\n      }\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        496,
+        -240
+      ],
+      "id": "c2d5d4e6-8ac0-4156-9b1e-3b704c5787c7",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "ID of the Google Sheets document",
+          "mode": "list",
+          "cachedResultName": "gold price report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rVTvxUe1I8k5-muC2bvCw4kYay_IfSgAGBCdL5dKHDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "ชีต1",
+          "cachedResultUrl": "Document URL + #gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "วันที่": "={{ $('HTTP Request').item.json.response.update_date }}",
+            "ทองรูปพรรณ ซื้อ": "={{ $('HTTP Request').item.json.response.price.gold.buy }}",
+            "เวลา": "={{ $('HTTP Request').item.json.response.update_time }}",
+            "ทองรูปพรรณ ขาย": "={{ $('HTTP Request').item.json.response.price.gold.sell }}",
+            "ทองแท่ง ซื้อ": "={{ $('HTTP Request').item.json.response.price.gold_bar.buy }}",
+            "ทองแท่ง ขาย": "={{ $('HTTP Request').item.json.response.price.gold_bar.sell }}",
+            "AI วิเคราะห์": "={{ $('Message a model').item.json.content.parts[0].text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "วันที่",
+              "displayName": "วันที่",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "เวลา",
+              "displayName": "เวลา",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ทองรูปพรรณ ซื้อ",
+              "displayName": "ทองรูปพรรณ ซื้อ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ทองรูปพรรณ ขาย",
+              "displayName": "ทองรูปพรรณ ขาย",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ทองแท่ง ซื้อ",
+              "displayName": "ทองแท่ง ซื้อ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ทองแท่ง ขาย",
+              "displayName": "ทองแท่ง ขาย",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AI วิเคราะห์",
+              "displayName": "AI วิเคราะห์",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        -64
+      ],
+      "id": "b03ef8f1-c5ec-4fc6-b880-a24fd9012a28",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "oaWhRngL1imyBRy6",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b1f601d8-a2a1-4bfa-ac0b-c3714974cb88",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "instance ID"
+  },
+  "id": "nH3UhOshD7Ds5h8D",
+  "tags": []
+}
