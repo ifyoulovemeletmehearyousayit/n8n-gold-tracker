@@ -1,4 +1,4 @@
- 🚀 Line Gold Tracker with AI Analysis
+# 🚀 Line Gold Tracker with AI Analysis
 
 > ระบบแจ้งเตือนราคาทองคำอัตโนมัติผ่าน LINE พร้อมวิเคราะห์แนวโน้มด้วย AI
 
