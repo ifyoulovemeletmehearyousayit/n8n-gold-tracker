@@ -1,35 +1,63 @@
-## 🚀 Line Gold Tracker with AI Analysis
+ 🚀 Line Gold Tracker with AI Analysis
 
-📝 Description
-This project was born out of a real-world need: helping parents in the jewelry industry. Instead of manually checking apps or websites multiple times a day, this automation streamlines the process. It delivers timely gold price updates directly to their phones, allowing them to focus on their craftsmanship while staying informed.
+> ระบบแจ้งเตือนราคาทองคำอัตโนมัติผ่าน LINE พร้อมวิเคราะห์แนวโน้มด้วย AI
 
-✨ Key Features
-🕒 Automated Alerts: Sends real-time gold price notifications every 3 hours.
-🤖 Smart AI Analysis: Provides "Buy" or "Sell" recommendations based on current market trends and data.
-💎 Jewelry-Focused: Designed specifically for professional jewelers and business owners.
-📱 High Accessibility: Optimized for ease of use for non-tech users (Parents/Jewelers).
+---
 
-🛠️ Prerequisites
-To run this workflow, you will need:
-n8n 
-API Keys: Gold Price API (e.g., Metal-API or Thai Gold API)
-Line Messaging API / Line OA Credentials
-Line Account: To follow the Official Account and receive alerts.
+## 📋 Description
 
-🚀 How to Use
-1. Connect with us
-Add Friend: Scan the Line OA QR Code below or add via Line ID.
-[Insert QR Code Image Here]
-2. Implementation (For Developers)
-If you wish to host this yourself:
-Import the .json workflow file into your n8n.
-Configure your credentials in the API Nodes.
-Activate the workflow.
-3. Enjoy!
-Sit Back & Relax: You will start receiving automated gold insights and market trends every 3 hours directly on your Line app.
+โปรเจกต์นี้เกิดจากความต้องการจริงในชีวิตประจำวัน ช่วยเหลือผู้ที่อยู่ในวงการทองคำและเครื่องประดับ  
+แทนที่จะต้องเช็คราคาทองเองหลายครั้งต่อวัน ระบบนี้จะส่งข้อมูลราคาและการวิเคราะห์จาก AI  
+มาถึงโทรศัพท์โดยอัตโนมัติ ให้โฟกัสกับงานได้เต็มที่
 
-🏗️ Tech Stack
-Automation: n8n
-Communication: Line Messaging API
-Logic: JavaScript (via n8n Function Nodes)
-Analysis: Gemini Message model
+---
+
+## ✨ Key Features
+
+- 🕐 **Automated Alerts** — แจ้งเตือนราคาทองแบบ real-time ทุก 3 ชั่วโมง
+- 🤖 **Smart AI Analysis** — วิเคราะห์แนวโน้มตลาด พร้อมคำแนะนำ ซื้อ / ขาย / รอดูเชิง
+- 💎 **Jewelry-Focused** — ออกแบบมาเพื่อช่างทองและเจ้าของร้านทองโดยเฉพาะ
+- 📊 **Data Logging** — บันทึกข้อมูลราคาทองลง Google Sheets อัตโนมัติเพื่อนำข้อมูลไปต่อยอดในอนาคต
+
+---
+
+## 🛠 Prerequisites
+
+สิ่งที่ต้องเตรียมก่อนใช้งาน:
+
+| รายการ | รายละเอียด |
+|--------|-----------|
+| n8n | Self-hosted หรือ Cloud |
+| Gold Price API | เช่น Thai Gold API |
+| LINE Messaging API | LINE Official Account |
+| Google Sheets | สำหรับ log ข้อมูล (optional) |
+| Gemini API Key | สำหรับ AI วิเคราะห์ |
+
+---
+
+## 🚀 How to Use
+
+### สำหรับผู้ใช้ทั่วไป
+
+1. **Add Friend** — สแกน QR Code หรือค้นหา LINE ID
+2. **รอรับการแจ้งเตือน** — ระบบจะส่งราคาทองพร้อม AI วิเคราะห์ให้อัตโนมัติ
+
+### สำหรับ Developer (Self-host)
+
+1. **Import workflow** — นำไฟล์ `.json` ไป import ใน n8n
+2. **ตั้งค่า Credentials** — กรอก API Key ใน nodes ที่เกี่ยวข้อง
+3. **Activate** — เปิด workflow แล้วรอรับข้อมูลได้เลย
+
+---
+
+## 🧱 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Automation | n8n |
+| Communication | LINE Messaging API |
+| AI Analysis | Google Gemini |
+| Logic | JavaScript (n8n Code Node) |
+| Data Storage | Google Sheets |
+
+---
